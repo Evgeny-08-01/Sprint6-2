@@ -7,19 +7,18 @@ import (
 	"time"
 )
 
-// Структура сервера
 type Serv struct {
 	loggerServ *log.Logger
 	HTTPServer http.Server
 }
 
 func Myserver(logger *log.Logger) *Serv {
-	router := http.NewServeMux() // Маршрутизатор////////////////////////////////////////
-// Регистрируем хэндлеры для различных путей/////////////////////////////////////////
-	router.HandleFunc("/", handlers.Handler1)       // вызов хэндлера по ....."/"
-	router.HandleFunc("/upload", handlers.Handler2) // вызов хэндлера по ....."/upload"
-// Создаем экземпляр для настройки роутера///////////////////////////////////////////
-	S := &Serv{
+	router := http.NewServeMux() 
+router.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+	 handlers.HandleGet(res, req, logger)})
+router.HandleFunc("/upload", func(res http.ResponseWriter, req *http.Request){
+	handlers.HandlePost(res, req, logger)})
+ S := &Serv{
 		loggerServ: logger,
 		HTTPServer: http.Server{
 			Addr:                         ":8080",
@@ -32,3 +31,5 @@ func Myserver(logger *log.Logger) *Serv {
 	}
 	return S
 }
+
+
